@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native'
+import { ActivityIndicator, ScrollView, Text, View, StyleSheet } from 'react-native'
 import { styled } from 'nativewind'
 import Card from '../../components/Card'
 import InputArea from '../../components/InputArea'
 import { useQuery } from '@tanstack/react-query'
 import { getSearchResults, getTrending } from '../../service/api'
+import MovieCard from '../../components/Card'
 
 const ViewStyled = styled(View)
 const TextStyled = styled(Text)
@@ -12,15 +13,17 @@ const TextStyled = styled(Text)
 function Home() {
   const [searchString, setSearchString] = useState<string>("")
 
+
   const trendingQuery = useQuery({
     queryKey: ['trending'],
     queryFn: getTrending
   })
 
   const searchQuery = useQuery({
-    queryKey: ['searchedItems'],
-    //queryFn: getSearchResults
+    queryKey: ['searchedItems', ],
+    queryFn: () =>  getSearchResults
   })
+
 
   return (
     <ViewStyled className='h-full w-full flex items-center flex-col'>
@@ -34,13 +37,13 @@ function Home() {
           <ActivityIndicator size="large" color={"red"} />
         }
 
-        <ScrollView horizontal showsVerticalScrollIndicator={false}> 
+        <ScrollView showsVerticalScrollIndicator={false}> 
           {trendingQuery.data?.results && (
             <>
               {
-                  trendingQuery.data?.results.map((item) => {
+                  trendingQuery.data?.results.map((item, key) => {
                   return (
-                    <Card></Card>
+                    <MovieCard key={key} movie={item}></MovieCard>
                     )
                   })
                 }
@@ -50,5 +53,14 @@ function Home() {
     </ViewStyled >
   )
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }
+
+});
 
 export default Home
