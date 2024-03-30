@@ -60,13 +60,4 @@ function Home() {
   )
 }
 
-const styles = StyleSheet.create({
-  scrollView: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }
-
-});
-
 export default Home
