@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { ActivityIndicator, ScrollView, Text, View, StyleSheet } from 'react-native'
 import { styled } from 'nativewind'
-import Card from '../../components/Card'
 import InputArea from '../../components/InputArea'
 import { useQuery } from '@tanstack/react-query'
 import { getSearchResults, getTrending } from '../../service/api'
-import MovieCard from '../../components/Card'
+import MovieCard from '../../components/MovieCard'
 import useDebounce from '../../utils/useDebounce'
 
 const ViewStyled = styled(View)
