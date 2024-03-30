@@ -7,18 +7,18 @@ export const getTrending = async (): Promise<TrendingResult> => {
     const response = await fetch(
         `https://api.themoviedb.org/3/trending/all/day?language=pt-BR&api_key=${API_KEY}&page=${1}`
     )
-    console.log("API KEY")
-    console.log(API_KEY)
+ 
     const data = await response.json()
 
-    console.log(data)
     return data
 }
 
 export const getSearchResults = async (query: string): Promise<TrendingResult> => {
     const response = await fetch(
-        `https://api.themoviedb.org/3/search/multi?language=pt-BR&api_key=${API_KEY}&query${encodeURIComponent(query)}`
+        `https://api.themoviedb.org/3/search/multi?language=pt-BR&api_key=${API_KEY}&query=${encodeURIComponent(query)}`
     )
+
+    console.log(query)
     const data = response.json()
     return data;
 }

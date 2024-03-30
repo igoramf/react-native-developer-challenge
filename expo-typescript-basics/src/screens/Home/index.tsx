@@ -6,13 +6,14 @@ import InputArea from '../../components/InputArea'
 import { useQuery } from '@tanstack/react-query'
 import { getSearchResults, getTrending } from '../../service/api'
 import MovieCard from '../../components/Card'
+import useDebounce from '../../utils/useDebounce'
 
 const ViewStyled = styled(View)
 const TextStyled = styled(Text)
 
 function Home() {
   const [searchString, setSearchString] = useState<string>("")
-
+  const debouncedString = useDebounce(searchString, 300)
 
   const trendingQuery = useQuery({
     queryKey: ['trending'],
@@ -20,8 +21,9 @@ function Home() {
   })
 
   const searchQuery = useQuery({
-    queryKey: ['searchedItems', ],
-    queryFn: () =>  getSearchResults
+    queryKey: ['searchedItems', debouncedString],
+    queryFn: () =>  getSearchResults(debouncedString),
+    enabled: debouncedString.length > 0
   })
 
 
@@ -30,7 +32,7 @@ function Home() {
         <InputArea setQueryString={setSearchString}></InputArea>
 
         <ViewStyled className='flex justify-start w-full pl-12 mt-4'>
-          <TextStyled className='text-3xl font-medium'>Trending</TextStyled>
+          <TextStyled className='text-3xl font-medium'>{searchQuery.data?.results ? "Resultados" : "Trending"}</TextStyled>
         </ViewStyled>
 
         {trendingQuery.isLoading || searchQuery.isLoading && 
@@ -38,17 +40,22 @@ function Home() {
         }
 
         <ScrollView showsVerticalScrollIndicator={false}> 
-          {trendingQuery.data?.results && (
-            <>
-              {
-                  trendingQuery.data?.results.map((item, key) => {
-                  return (
-                    <MovieCard key={key} movie={item}></MovieCard>
-                    )
-                  })
-                }
-            </>
-          )} 
+          {
+            searchQuery.data?.results ? (
+              <>{searchQuery.data?.results.map((item) => <MovieCard key={item.id} movie={item}></MovieCard>)}</>
+            )
+            : (
+              <>
+                {
+                    trendingQuery.data?.results.map((item, key) => {
+                    return (
+                      <MovieCard key={item.id} movie={item}></MovieCard>
+                      )
+                    })
+                  }
+              </>
+            )
+          }
         </ScrollView>
     </ViewStyled >
   )
